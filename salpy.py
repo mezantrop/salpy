@@ -59,6 +59,8 @@ class Salpy:
 
     # ---------------------------------------------------------------------------------------------------------------- #
     def renumerate_code(self):
+        """Recount all the keys of source and ignore code"""
+
         self.source_code = {n: l for n, l in enumerate(self.source_code.values())}
         self.ignore_code = {n: l for n, l in enumerate(self.ignore_code.values())}
 
@@ -74,7 +76,7 @@ class Salpy:
 
     # ---------------------------------------------------------------------------------------------------------------- #
     def write(self, file=None, b=False):
-        """Write the code into the file"""
+        """Write the code into the file; b sets bytes mode"""
 
         data = '\n'.join([self.source_code[n] for n in list(self.source_code.keys())])
 
@@ -87,6 +89,8 @@ class Salpy:
 
     # ---------------------------------------------------------------------------------------------------------------- #
     def find_line(self, string='', all_entries=False):
+        """Find a line or all the entries of the line"""
+
         r = []
 
         if not string:
@@ -103,6 +107,7 @@ class Salpy:
 
     # ---------------------------------------------------------------------------------------------------------------- #
     def find_block(self, begin='', end='', all_entries=False):
+        """Find a block or all blocks of code between begin and end"""
 
         r = []
 
@@ -127,6 +132,7 @@ class Salpy:
 
     # ---------------------------------------------------------------------------------------------------------------- #
     def del_line(self, n=-1, string='', all_entries=False):
+        """Remove a string at position n, or find it or all the entries of the string"""
 
         if n >= 0 and string:
             return -1
@@ -148,6 +154,7 @@ class Salpy:
 
     # ---------------------------------------------------------------------------------------------------------------- #
     def insert_line(self, string='', n=-1):
+        """Insert a string at position n"""
 
         if n in self.source_code:
             for i in list(self.source_code.keys())[::-1]:
@@ -158,7 +165,19 @@ class Salpy:
         self.renumerate_code()
 
     # ---------------------------------------------------------------------------------------------------------------- #
+    def replace_line(self, old_string, new_string, n=-1):
+        """Replace an old_string with a new_string at position n, or find it first"""
+
+        if n == -1:
+            n = self.find_line(string=old_string)
+            n = n[0]
+
+        self.source_code[n] = new_string
+        return n
+
+    # ---------------------------------------------------------------------------------------------------------------- #
     def insert_lines(self, strings, n=-1):
+        """Insert a list of strings at position n"""
 
         slen = len(strings)
         if n in self.source_code:
@@ -175,4 +194,14 @@ class Salpy:
 
 # -------------------------------------------------------------------------------------------------------------------- #
 if __name__ == '__main__':
-    pass
+    # Changeme
+
+    new_code = """
+    print("Hello world!")
+    exit(0)
+    """
+
+    slp = Salpy()
+    slp.read()
+    entry_point = slp.replace_line(old_string='Changeme', new_string=new_code)
+    slp.write()
